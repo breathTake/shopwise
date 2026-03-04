@@ -14,7 +14,7 @@ export function CategorySelector({ selected, onSelect }: CategorySelectorProps) 
           <TouchableOpacity
             key={cat}
             onPress={() => onSelect(cat)}
-            className={`px-3 py-2 rounded-xl ${selected === cat ? 'bg-primary-600' : 'bg-gray-100'}`}
+            className={`px-3 py-2 rounded-xl ${selected === cat ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'}`}
           >
             <Text className="text-lg">{CATEGORY_ICONS[cat]}</Text>
           </TouchableOpacity>

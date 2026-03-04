@@ -1,11 +1,9 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 
 function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
   return (
-    <Text style={{ fontSize: focused ? 26 : 22, opacity: focused ? 1 : 0.6 }}>
-      {emoji}
-    </Text>
+    <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.55 }}>{emoji}</Text>
   );
 }
 
@@ -13,21 +11,21 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#16a34a',
-        tabBarInactiveTintColor: '#6b7280',
+        tabBarActiveTintColor: '#34C759',
+        tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopColor: '#e5e7eb',
+          backgroundColor: Platform.OS === 'ios' ? 'rgba(242,242,247,0.94)' : '#F2F2F7',
+          borderTopColor: '#E5E5EA',
+          borderTopWidth: 0.5,
           height: 88,
-          paddingBottom: 24,
-          paddingTop: 8,
+          paddingBottom: 28,
+          paddingTop: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
+          fontSize: 10,
+          fontWeight: '500',
         },
         headerShown: false,
-        headerTitle: 'Listen',
       }}
     >
       <Tabs.Screen

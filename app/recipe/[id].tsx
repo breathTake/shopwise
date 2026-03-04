@@ -125,215 +125,259 @@ export default function RecipeDetailScreen() {
   const origServings = parseInt(servings) || 2;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-[#F2F2F7]">
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
-        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 120 }}>
-          <TextInput
-            className="text-2xl font-bold text-gray-900 mb-1 bg-transparent"
-            placeholder="Rezeptname..."
-            value={name}
-            onChangeText={setName}
-            style={{ fontSize: 24 }}
-          />
-          <TextInput
-            className="text-sm text-gray-400 mb-4 bg-transparent"
-            placeholder="Kurze Beschreibung..."
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
+        {/* Header */}
+        <View className="px-4 pt-2 pb-2 flex-row items-center justify-between">
+          <TouchableOpacity onPress={() => router.back()} className="p-1 -ml-1">
+            <Text className="text-[#34C759] font-medium" style={{ fontSize: 17 }}>‹ Zurück</Text>
+          </TouchableOpacity>
+          <Text className="text-[17px] font-semibold text-[#1C1C1E]">
+            {isNew ? 'Neues Rezept' : 'Rezept bearbeiten'}
+          </Text>
+          <View style={{ width: 60 }} />
+        </View>
 
-          <View className="flex-row items-center gap-2 mb-6">
-            <Text className="text-sm text-gray-600">👤 Portionen:</Text>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, paddingTop: 8 }}>
+          {/* Name & Description */}
+          <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">Name</Text>
+          <View className="bg-white rounded-xl overflow-hidden mb-4">
             <TextInput
-              className="bg-white rounded-xl px-3 py-2 text-gray-900 text-sm w-16 text-center"
-              style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 }}
-              value={servings}
-              onChangeText={setServings}
-              keyboardType="numeric"
+              className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+              placeholder="Rezeptname..."
+              placeholderTextColor="#8E8E93"
+              value={name}
+              onChangeText={setName}
             />
           </View>
 
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-base font-bold text-gray-900">Zutaten</Text>
-            <TouchableOpacity
-              onPress={() => setAddModalVisible(true)}
-              className="bg-primary-100 px-3 py-1.5 rounded-xl"
-            >
-              <Text className="text-primary-700 font-semibold text-sm">+ Hinzufügen</Text>
+          <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">Beschreibung</Text>
+          <View className="bg-white rounded-xl overflow-hidden mb-4">
+            <TextInput
+              className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+              placeholder="Kurze Beschreibung..."
+              placeholderTextColor="#8E8E93"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              style={{ minHeight: 60, textAlignVertical: 'top' }}
+            />
+          </View>
+
+          {/* Servings */}
+          <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">Portionen</Text>
+          <View className="bg-white rounded-xl overflow-hidden mb-4">
+            <View className="flex-row items-center px-4 py-3.5">
+              <Text className="text-[17px] text-[#1C1C1E] flex-1">Personenanzahl</Text>
+              <TextInput
+                className="text-[17px] text-[#1C1C1E] text-right"
+                style={{ minWidth: 48 }}
+                value={servings}
+                onChangeText={setServings}
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
+
+          {/* Ingredients */}
+          <View className="flex-row items-center justify-between mb-1 px-1">
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide">Zutaten</Text>
+            <TouchableOpacity onPress={() => setAddModalVisible(true)}>
+              <Text className="text-[15px] font-semibold text-[#34C759]">+ Hinzufügen</Text>
             </TouchableOpacity>
           </View>
 
           {ingredients.length === 0 ? (
-            <View className="bg-white rounded-2xl p-6 items-center mb-4"
-              style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 }}
-            >
+            <View className="bg-white rounded-xl px-4 py-8 items-center mb-4">
               <Text className="text-3xl mb-2">🥕</Text>
-              <Text className="text-sm text-gray-400">Noch keine Zutaten</Text>
+              <Text className="text-[15px] text-[#8E8E93]">Noch keine Zutaten</Text>
             </View>
           ) : (
-            ingredients.map((ing) => (
-              <View
-                key={ing.id}
-                className="bg-white rounded-xl px-4 py-3 mb-2 flex-row items-center"
-                style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 }}
-              >
-                <Text className="text-xl mr-3">{CATEGORY_ICONS[ing.category]}</Text>
-                <View className="flex-1">
-                  <Text className="text-base font-medium text-gray-900">{ing.name}</Text>
-                  <Text className="text-xs text-gray-400">{fmtQty(ing.quantity)} {ing.unit}</Text>
+            <View className="bg-white rounded-xl overflow-hidden mb-4">
+              {ingredients.map((ing, idx) => (
+                <View key={ing.id}>
+                  <View className="flex-row items-center px-4 py-3.5">
+                    <Text className="text-xl mr-3">{CATEGORY_ICONS[ing.category]}</Text>
+                    <View className="flex-1">
+                      <Text className="text-[17px] font-medium text-[#1C1C1E]">{ing.name}</Text>
+                      <Text className="text-[13px] text-[#8E8E93]">{fmtQty(ing.quantity)} {ing.unit}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => setIngredients((prev) => prev.filter((i) => i.id !== ing.id))}
+                      className="p-2"
+                    >
+                      <Text className="text-[#C7C7CC] text-base">✕</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {idx < ingredients.length - 1 && (
+                    <View className="h-px bg-[#E5E5EA] ml-4" />
+                  )}
                 </View>
-                <TouchableOpacity
-                  onPress={() => setIngredients((prev) => prev.filter((i) => i.id !== ing.id))}
-                  className="p-2"
-                >
-                  <Text className="text-gray-300">✕</Text>
-                </TouchableOpacity>
-              </View>
-            ))
+              ))}
+            </View>
           )}
         </ScrollView>
 
+        {/* Bottom action bar */}
         <View className="absolute bottom-8 left-4 right-4 flex-row gap-3">
           <TouchableOpacity
             onPress={openPortionModal}
-            className="flex-1 bg-white border border-primary-300 py-3.5 rounded-2xl items-center"
-            style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 }}
+            className="flex-1 bg-white py-3.5 rounded-2xl items-center border border-[#34C759]"
           >
-            <Text className="text-primary-700 font-semibold">🛒 Zur Liste</Text>
+            <Text className="text-[17px] font-semibold text-[#34C759]">Zur Liste</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleSave}
-            className="flex-1 bg-primary-600 py-3.5 rounded-2xl items-center"
-            style={{ shadowColor: '#16a34a', shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 }}
+            className="flex-1 py-3.5 rounded-2xl items-center"
+            style={{ backgroundColor: '#34C759' }}
           >
-            <Text className="text-white font-semibold">💾 Speichern</Text>
+            <Text className="text-[17px] font-semibold text-white">Speichern</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
 
-      {/* ── Add Ingredient Modal ── */}
+      {/* Add Ingredient Modal */}
       <Modal visible={addModalVisible} transparent animationType="slide">
         <KeyboardAvoidingView behavior="padding" className="flex-1 justify-end">
           <TouchableOpacity className="flex-1" activeOpacity={1} onPress={resetIngredientModal} />
-          <View className="bg-white rounded-t-3xl p-6">
-            <Text className="text-xl font-bold text-gray-900 mb-4">Zutat hinzufügen</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900 text-base mb-3"
-              placeholder="Zutat..."
-              value={ingName}
-              onChangeText={setIngName}
-              autoFocus
-            />
-            <View className="flex-row gap-2 mb-4">
+          <View className="bg-[#F2F2F7] rounded-t-3xl pt-3 pb-8 px-4">
+            <View className="w-9 h-1 bg-[#E5E5EA] rounded-full self-center mb-4" />
+            <Text className="text-[22px] font-bold text-[#1C1C1E] mb-4">Zutat hinzufügen</Text>
+
+            <View className="bg-white rounded-xl overflow-hidden mb-3">
               <TextInput
-                className="flex-1 bg-gray-100 rounded-xl px-4 py-3 text-gray-900 text-base"
-                placeholder="Menge"
-                value={ingQuantity}
-                onChangeText={setIngQuantity}
-                keyboardType="numeric"
-              />
-              <TextInput
-                className="flex-1 bg-gray-100 rounded-xl px-4 py-3 text-gray-900 text-base"
-                placeholder="Einheit"
-                value={ingUnit}
-                onChangeText={setIngUnit}
+                className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+                placeholder="Zutat..."
+                placeholderTextColor="#8E8E93"
+                value={ingName}
+                onChangeText={setIngName}
+                autoFocus
               />
             </View>
+
+            <View className="flex-row gap-2 mb-4">
+              <View className="flex-1 bg-white rounded-xl overflow-hidden">
+                <TextInput
+                  className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+                  placeholder="Menge"
+                  placeholderTextColor="#8E8E93"
+                  value={ingQuantity}
+                  onChangeText={setIngQuantity}
+                  keyboardType="numeric"
+                />
+              </View>
+              <View className="flex-1 bg-white rounded-xl overflow-hidden">
+                <TextInput
+                  className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+                  placeholder="Einheit"
+                  placeholderTextColor="#8E8E93"
+                  value={ingUnit}
+                  onChangeText={setIngUnit}
+                />
+              </View>
+            </View>
+
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-2 px-1">Kategorie</Text>
             <View className="mb-6">
               <CategorySelector selected={ingCategory} onSelect={setIngCategory} />
             </View>
+
             <View className="flex-row gap-3">
-              <TouchableOpacity onPress={resetIngredientModal} className="flex-1 bg-gray-100 py-3.5 rounded-xl items-center">
-                <Text className="text-gray-700 font-semibold">Abbrechen</Text>
+              <TouchableOpacity onPress={resetIngredientModal} className="flex-1 bg-white py-3.5 rounded-xl items-center">
+                <Text className="text-[17px] font-semibold text-[#007AFF]">Abbrechen</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleAddIngredient} className="flex-1 bg-primary-600 py-3.5 rounded-xl items-center">
-                <Text className="text-white font-semibold">Hinzufügen</Text>
+              <TouchableOpacity
+                onPress={handleAddIngredient}
+                className="flex-1 py-3.5 rounded-xl items-center"
+                style={{ backgroundColor: '#34C759' }}
+              >
+                <Text className="text-[17px] font-semibold text-white">Hinzufügen</Text>
               </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* ── Portion Scale Modal ── */}
+      {/* Portion Scale Modal */}
       <Modal visible={portionModalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="bg-white rounded-t-3xl p-6">
-            <Text className="text-xl font-bold text-gray-900 mb-0.5" numberOfLines={1}>{name}</Text>
-            <Text className="text-sm text-gray-400 mb-6">Originalrezept für {origServings} Personen</Text>
+        <View className="flex-1 justify-end" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+          <View className="bg-[#F2F2F7] rounded-t-3xl pt-3 pb-8 px-4">
+            <View className="w-9 h-1 bg-[#E5E5EA] rounded-full self-center mb-4" />
+            <Text className="text-[22px] font-bold text-[#1C1C1E]" numberOfLines={1}>{name}</Text>
+            <Text className="text-[15px] text-[#8E8E93] mt-0.5 mb-5">Originalrezept für {origServings} Personen</Text>
 
             {/* Stepper */}
-            <View className="items-center mb-6">
-              <Text className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
-                Portionen anpassen
-              </Text>
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-3 px-1">Portionen anpassen</Text>
+            <View className="bg-white rounded-xl px-4 py-4 mb-4 items-center">
               <View className="flex-row items-center gap-8">
                 <TouchableOpacity
                   onPress={() => adjustServings(-1)}
-                  className="w-12 h-12 bg-gray-100 rounded-full items-center justify-center"
+                  className="w-12 h-12 bg-[#E5E5EA] rounded-full items-center justify-center"
                   activeOpacity={0.7}
                 >
-                  <Text className="text-2xl text-gray-600 font-light" style={{ lineHeight: 28 }}>−</Text>
+                  <Text className="text-[#1C1C1E] font-light" style={{ fontSize: 28, lineHeight: 32 }}>−</Text>
                 </TouchableOpacity>
 
                 <View className="items-center" style={{ minWidth: 80 }}>
-                  <Text className="text-5xl font-bold text-gray-900 text-center">{targetServings}</Text>
-                  <Text className="text-xs text-gray-400 mt-1">Personen</Text>
+                  <Text className="text-[#1C1C1E] font-bold text-center" style={{ fontSize: 48 }}>{targetServings}</Text>
+                  <Text className="text-[13px] text-[#8E8E93] mt-1">Personen</Text>
                 </View>
 
                 <TouchableOpacity
                   onPress={() => adjustServings(1)}
-                  className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center"
+                  className="w-12 h-12 rounded-full items-center justify-center"
+                  style={{ backgroundColor: '#34C759' }}
                   activeOpacity={0.7}
                 >
-                  <Text className="text-2xl text-primary-600 font-light" style={{ lineHeight: 28 }}>+</Text>
+                  <Text className="text-white font-light" style={{ fontSize: 28, lineHeight: 32 }}>+</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Scaled ingredients preview */}
             {ingredients.length > 0 && (
-              <View className="mb-6">
-                <Text className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Zutaten (skaliert)
-                </Text>
-                <ScrollView style={{ maxHeight: 180 }} showsVerticalScrollIndicator={false}>
-                  {ingredients.map((ing) => {
-                    const scaled = scaleQty(ing.quantity, origServings, targetServings);
-                    const changed = scaled !== ing.quantity;
-                    return (
-                      <View key={ing.id} className="flex-row items-center py-2.5 border-b border-gray-50">
-                        <Text className="text-base mr-2">{CATEGORY_ICONS[ing.category]}</Text>
-                        <Text className="flex-1 text-sm text-gray-800">{ing.name}</Text>
-                        <View className="items-end">
-                          <Text className={`text-sm font-semibold ${changed ? 'text-primary-600' : 'text-gray-500'}`}>
-                            {fmtQty(scaled)} {ing.unit}
-                          </Text>
-                          {changed && (
-                            <Text className="text-xs text-gray-400">
-                              statt {fmtQty(ing.quantity)} {ing.unit}
+              <>
+                <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">Zutaten (skaliert)</Text>
+                <View className="bg-white rounded-xl overflow-hidden mb-4">
+                  <ScrollView style={{ maxHeight: 180 }} showsVerticalScrollIndicator={false}>
+                    {ingredients.map((ing, idx) => {
+                      const scaled = scaleQty(ing.quantity, origServings, targetServings);
+                      const changed = scaled !== ing.quantity;
+                      return (
+                        <View key={ing.id} className={`flex-row items-center px-4 py-3 ${idx < ingredients.length - 1 ? 'border-b border-[#E5E5EA]' : ''}`}>
+                          <Text className="text-base mr-2">{CATEGORY_ICONS[ing.category]}</Text>
+                          <Text className="flex-1 text-[15px] text-[#1C1C1E]">{ing.name}</Text>
+                          <View className="items-end">
+                            <Text className={`text-[15px] font-semibold ${changed ? 'text-[#34C759]' : 'text-[#8E8E93]'}`}>
+                              {fmtQty(scaled)} {ing.unit}
                             </Text>
-                          )}
+                            {changed && (
+                              <Text className="text-[12px] text-[#8E8E93]">
+                                statt {fmtQty(ing.quantity)} {ing.unit}
+                              </Text>
+                            )}
+                          </View>
                         </View>
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </View>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </>
             )}
 
             <View className="flex-row gap-3">
               <TouchableOpacity
                 onPress={() => setPortionModalVisible(false)}
-                className="flex-1 bg-gray-100 py-3.5 rounded-xl items-center"
+                className="flex-1 bg-white py-3.5 rounded-xl items-center"
               >
-                <Text className="text-gray-700 font-semibold">Abbrechen</Text>
+                <Text className="text-[17px] font-semibold text-[#007AFF]">Abbrechen</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleConfirmPortions}
-                className="flex-1 bg-primary-600 py-3.5 rounded-xl items-center"
+                className="flex-1 py-3.5 rounded-xl items-center"
+                style={{ backgroundColor: '#34C759' }}
               >
-                <Text className="text-white font-semibold">🛒 Zur Einkaufsliste</Text>
+                <Text className="text-[17px] font-semibold text-white">Zur Einkaufsliste</Text>
               </TouchableOpacity>
             </View>
           </View>

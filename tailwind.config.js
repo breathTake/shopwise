@@ -8,14 +8,27 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // iOS System Green (primary tint — grocery/food context)
         primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+          50:  '#F0FEF4',
+          100: '#DCFCE7',
+          500: '#34C759',   // iOS systemGreen
+          600: '#30B050',   // slightly darker for pressed state
+          700: '#248A3D',
         },
-        accent: '#3b82f6',
+        // iOS System Colors
+        ios: {
+          bg:        '#F2F2F7',   // systemGroupedBackground
+          card:      '#FFFFFF',   // systemBackground
+          gray:      '#8E8E93',   // systemGray (secondary label)
+          gray2:     '#AEAEB2',   // systemGray2
+          separator: '#E5E5EA',   // systemGray5 (used as separator)
+          blue:      '#007AFF',   // systemBlue
+          red:       '#FF3B30',   // systemRed
+          orange:    '#FF9500',   // systemOrange
+          label:     '#1C1C1E',   // label (primary text)
+        },
+        accent: '#007AFF',
       },
     },
   },

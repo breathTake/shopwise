@@ -7,9 +7,11 @@ import {
   TextInput,
   Modal,
   Alert,
-  SafeAreaView,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useProductStore } from '../../store/useProductStore';
 import { Category, CATEGORIES, CATEGORY_LABELS, CATEGORY_ICONS } from '../../types';
 import { FAB } from '../../components/FAB';
@@ -48,22 +50,28 @@ export default function ProductsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="px-4 pt-6 pb-2">
-        <Text className="text-3xl font-bold text-gray-900">Produkte</Text>
-        <Text className="text-base text-gray-500 mt-1">{products.length} gespeicherte Produkte</Text>
+    <SafeAreaView className="flex-1 bg-[#F2F2F7]">
+      {/* Header */}
+      <View className="px-4 pt-4 pb-2">
+        <Text className="font-bold text-[#1C1C1E]" style={{ fontSize: 34 }}>Produkte</Text>
+        <Text className="text-[#8E8E93]" style={{ fontSize: 15 }}>{products.length} gespeicherte Produkte</Text>
       </View>
 
+      {/* Search */}
       <View className="px-4 mb-3">
-        <TextInput
-          className="bg-white rounded-xl px-4 py-3 text-gray-900 text-base shadow-sm"
-          style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6 }}
-          placeholder="🔍  Produkt suchen..."
-          value={search}
-          onChangeText={setSearch}
-        />
+        <View className="bg-[#E5E5EA] rounded-xl flex-row items-center px-3">
+          <Text className="text-[#8E8E93] mr-2">🔍</Text>
+          <TextInput
+            className="flex-1 py-3 text-[17px] text-[#1C1C1E]"
+            placeholder="Produkt suchen..."
+            placeholderTextColor="#8E8E93"
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
       </View>
 
+      {/* Category filter chips */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -72,10 +80,11 @@ export default function ProductsScreen() {
         <TouchableOpacity
           onPress={() => setFilterCategory(null)}
           className={`px-3 py-1.5 rounded-full border ${
-            filterCategory === null ? 'bg-primary-600 border-primary-600' : 'bg-white border-gray-200'
+            filterCategory === null ? 'border-[#34C759]' : 'bg-white border-[#E5E5EA]'
           }`}
+          style={filterCategory === null ? { backgroundColor: '#34C759' } : {}}
         >
-          <Text className={`text-sm font-medium ${filterCategory === null ? 'text-white' : 'text-gray-600'}`}>
+          <Text className={`text-[15px] font-medium ${filterCategory === null ? 'text-white' : 'text-[#1C1C1E]'}`}>
             Alle
           </Text>
         </TouchableOpacity>
@@ -84,39 +93,47 @@ export default function ProductsScreen() {
             key={cat}
             onPress={() => setFilterCategory(filterCategory === cat ? null : cat)}
             className={`px-3 py-1.5 rounded-full border flex-row items-center gap-1 ${
-              filterCategory === cat ? 'bg-primary-600 border-primary-600' : 'bg-white border-gray-200'
+              filterCategory === cat ? 'border-[#34C759]' : 'bg-white border-[#E5E5EA]'
             }`}
+            style={filterCategory === cat ? { backgroundColor: '#34C759' } : {}}
           >
-            <Text className="text-sm">{CATEGORY_ICONS[cat]}</Text>
-            <Text className={`text-sm font-medium ${filterCategory === cat ? 'text-white' : 'text-gray-600'}`}>
+            <Text className="text-[15px]">{CATEGORY_ICONS[cat]}</Text>
+            <Text className={`text-[15px] font-medium ${filterCategory === cat ? 'text-white' : 'text-[#1C1C1E]'}`}>
               {CATEGORY_LABELS[cat]}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
+      {/* Product list */}
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
-        renderItem={({ item }) => (
-          <View
-            className="bg-white rounded-xl px-4 py-3 mb-2 flex-row items-center justify-between shadow-sm"
-            style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 }}
-          >
-            <View className="flex-row items-center gap-3">
-              <Text className="text-xl">{CATEGORY_ICONS[item.category]}</Text>
-              <View>
-                <Text className="text-base font-medium text-gray-900">{item.name}</Text>
-                <Text className="text-xs text-gray-400">
-                  {CATEGORY_LABELS[item.category]}
-                  {item.defaultUnit ? ` · ${item.defaultUnit}` : ''}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 100 }}
+        ListHeaderComponent={
+          filtered.length > 0 ? (
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">
+              {filterCategory ? CATEGORY_LABELS[filterCategory] : 'Alle Produkte'}
+            </Text>
+          ) : null
+        }
+        renderItem={({ item, index }) => (
+          <View>
+            <View className={`bg-white flex-row items-center px-4 py-3.5 ${index === 0 ? 'rounded-t-xl' : ''} ${index === filtered.length - 1 ? 'rounded-b-xl' : ''}`}>
+              <Text className="text-xl mr-3">{CATEGORY_ICONS[item.category]}</Text>
+              <View className="flex-1">
+                <Text className="text-[17px] font-medium text-[#1C1C1E]">{item.name}</Text>
+                <Text className="text-[13px] text-[#8E8E93]">
+                  {CATEGORY_LABELS[item.category]}{item.defaultUnit ? ` · ${item.defaultUnit}` : ''}
                 </Text>
               </View>
+              <TouchableOpacity onPress={() => handleDelete(item.id, item.name)} className="p-2">
+                <Text className="text-[#8E8E93]">✕</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => handleDelete(item.id, item.name)} className="p-2">
-              <Text className="text-gray-400">✕</Text>
-            </TouchableOpacity>
+            {index < filtered.length - 1 && (
+              <View className="h-px bg-[#E5E5EA] ml-4" />
+            )}
           </View>
         )}
         ListEmptyComponent={<EmptyState emoji="📦" title="Keine Produkte" />}
@@ -124,43 +141,61 @@ export default function ProductsScreen() {
 
       <FAB onPress={() => setModalVisible(true)} />
 
+      {/* Add Product Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="bg-white rounded-t-3xl p-6">
-            <Text className="text-xl font-bold text-gray-900 mb-4">Neues Produkt</Text>
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900 text-base mb-3"
-              placeholder="Produktname..."
-              value={name}
-              onChangeText={setName}
-              autoFocus
-            />
-            <TextInput
-              className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900 text-base mb-4"
-              placeholder="Einheit (z.B. kg, Stück, L)..."
-              value={unit}
-              onChangeText={setUnit}
-            />
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Kategorie</Text>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 justify-end">
+          <TouchableOpacity
+            className="flex-1"
+            activeOpacity={1}
+            onPress={() => { setModalVisible(false); setName(''); setUnit(''); setCategory('sonstiges'); }}
+          />
+          <View className="bg-[#F2F2F7] rounded-t-3xl pt-3 pb-8 px-4">
+            <View className="w-9 h-1 bg-[#E5E5EA] rounded-full self-center mb-4" />
+            <Text className="text-[22px] font-bold text-[#1C1C1E] mb-4">Neues Produkt</Text>
+
+            <View className="bg-white rounded-xl overflow-hidden mb-3">
+              <TextInput
+                className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+                placeholder="Produktname..."
+                placeholderTextColor="#8E8E93"
+                value={name}
+                onChangeText={setName}
+                autoFocus
+              />
+            </View>
+
+            <View className="bg-white rounded-xl overflow-hidden mb-4">
+              <TextInput
+                className="px-4 py-3.5 text-[17px] text-[#1C1C1E]"
+                placeholder="Einheit (z.B. kg, Stück, L)..."
+                placeholderTextColor="#8E8E93"
+                value={unit}
+                onChangeText={setUnit}
+              />
+            </View>
+
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-2 px-1">Kategorie</Text>
             <View className="mb-6">
               <CategorySelector selected={category} onSelect={setCategory} />
             </View>
+
             <View className="flex-row gap-3">
               <TouchableOpacity
                 onPress={() => { setModalVisible(false); setName(''); setUnit(''); setCategory('sonstiges'); }}
-                className="flex-1 bg-gray-100 py-3.5 rounded-xl items-center"
+                className="flex-1 bg-white py-3.5 rounded-xl items-center"
               >
-                <Text className="text-gray-700 font-semibold">Abbrechen</Text>
+                <Text className="text-[17px] font-semibold text-[#007AFF]">Abbrechen</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleAdd}
-                className="flex-1 bg-primary-600 py-3.5 rounded-xl items-center"
+                className="flex-1 py-3.5 rounded-xl items-center"
+                style={{ backgroundColor: '#34C759' }}
               >
-                <Text className="text-white font-semibold">Hinzufügen</Text>
+                <Text className="text-[17px] font-semibold text-white">Hinzufügen</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

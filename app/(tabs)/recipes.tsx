@@ -80,51 +80,60 @@ export default function RecipesScreen() {
   const { recipe: portionRecipe, targetServings } = portionModal;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="px-4 pt-6 pb-2">
-        <Text className="text-3xl font-bold text-gray-900">Rezepte</Text>
-        <Text className="text-base text-gray-500 mt-1">Gespeicherte Rezepte</Text>
+    <SafeAreaView className="flex-1 bg-[#F2F2F7]">
+      {/* Header */}
+      <View className="px-4 pt-4 pb-2">
+        <Text className="font-bold text-[#1C1C1E]" style={{ fontSize: 34 }}>Rezepte</Text>
+        <Text className="text-[#8E8E93]" style={{ fontSize: 15 }}>Gespeicherte Rezepte</Text>
       </View>
 
       <FlatList
         data={recipes}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => router.push(`/recipe/${item.id}`)}
-            className="bg-white rounded-2xl p-4 mb-3"
-            style={{ shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, elevation: 2 }}
-          >
-            <View className="flex-row items-start justify-between">
-              <View className="flex-1">
-                <Text className="text-lg font-semibold text-gray-900">{item.name}</Text>
-                {item.description && (
-                  <Text className="text-sm text-gray-400 mt-0.5" numberOfLines={1}>
-                    {item.description}
-                  </Text>
-                )}
-                <View className="flex-row items-center gap-3 mt-2">
-                  <Text className="text-xs text-gray-400">👤 {item.servings} Personen</Text>
-                  <Text className="text-xs text-gray-400">🥕 {item.ingredients.length} Zutaten</Text>
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 100 }}
+        renderItem={({ item, index }) => (
+          <View>
+            {index === 0 && (
+              <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">
+                Alle Rezepte
+              </Text>
+            )}
+            <TouchableOpacity
+              onPress={() => router.push(`/recipe/${item.id}`)}
+              className="bg-white rounded-xl overflow-hidden mb-px"
+              activeOpacity={0.6}
+            >
+              <View className="px-4 py-3.5 flex-row items-center">
+                <View className="flex-1 mr-3">
+                  <Text className="text-[17px] font-medium text-[#1C1C1E]" numberOfLines={1}>{item.name}</Text>
+                  {item.description ? (
+                    <Text className="text-[13px] text-[#8E8E93] mt-0.5" numberOfLines={1}>{item.description}</Text>
+                  ) : (
+                    <Text className="text-[13px] text-[#8E8E93] mt-0.5">
+                      {item.servings} Personen · {item.ingredients.length} Zutaten
+                    </Text>
+                  )}
                 </View>
-              </View>
-              <View className="flex-row gap-2 ml-2">
                 <TouchableOpacity
                   onPress={() => openPortionModal(item)}
-                  className="bg-primary-50 p-2 rounded-xl"
+                  className="bg-[#F0FEF4] w-9 h-9 rounded-full items-center justify-center mr-2"
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <Text className="text-sm">🛒</Text>
+                  <Text style={{ fontSize: 16 }}>🛒</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleDelete(item.id, item.name)}
-                  className="bg-red-50 p-2 rounded-xl"
+                  className="bg-[#FFF1F0] w-9 h-9 rounded-full items-center justify-center"
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <Text className="text-sm">🗑️</Text>
+                  <Text style={{ fontSize: 14 }}>🗑️</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            {index < recipes.length - 1 && (
+              <View className="h-px bg-[#E5E5EA] ml-4" />
+            )}
+          </View>
         )}
         ListEmptyComponent={
           <EmptyState emoji="📖" title="Keine Rezepte" subtitle="Füge dein erstes Rezept hinzu" />
@@ -133,89 +142,91 @@ export default function RecipesScreen() {
 
       <FAB onPress={() => router.push('/recipe/new')} />
 
-      {/* ── Portion Scale Modal ── */}
+      {/* Portion Scale Modal */}
       <Modal visible={portionModal.visible} transparent animationType="slide">
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="bg-white rounded-t-3xl p-6">
-            <Text className="text-xl font-bold text-gray-900" numberOfLines={1}>
+        <View className="flex-1 justify-end" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+          <View className="bg-[#F2F2F7] rounded-t-3xl pt-3 pb-8 px-4">
+            <View className="w-9 h-1 bg-[#E5E5EA] rounded-full self-center mb-4" />
+
+            <Text className="text-[22px] font-bold text-[#1C1C1E]" numberOfLines={1}>
               {portionRecipe?.name ?? ''}
             </Text>
-            <Text className="text-sm text-gray-400 mt-0.5 mb-6">
+            <Text className="text-[15px] text-[#8E8E93] mt-0.5 mb-5">
               Originalrezept für {portionRecipe?.servings ?? 0} Personen
             </Text>
 
             {/* Stepper */}
-            <View className="items-center mb-6">
-              <Text className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
-                Portionen anpassen
-              </Text>
+            <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-3 px-1">Portionen anpassen</Text>
+            <View className="bg-white rounded-xl px-4 py-4 mb-4 items-center">
               <View className="flex-row items-center gap-8">
                 <TouchableOpacity
                   onPress={() => adjustServings(-1)}
-                  className="w-12 h-12 bg-gray-100 rounded-full items-center justify-center"
+                  className="w-12 h-12 bg-[#E5E5EA] rounded-full items-center justify-center"
                   activeOpacity={0.7}
                 >
-                  <Text className="text-2xl text-gray-600 font-light" style={{ lineHeight: 28 }}>−</Text>
+                  <Text className="text-[#1C1C1E] font-light" style={{ fontSize: 28, lineHeight: 32 }}>−</Text>
                 </TouchableOpacity>
 
                 <View className="items-center" style={{ minWidth: 80 }}>
-                  <Text className="text-5xl font-bold text-gray-900 text-center">{targetServings}</Text>
-                  <Text className="text-xs text-gray-400 mt-1">Personen</Text>
+                  <Text className="text-[#1C1C1E] font-bold text-center" style={{ fontSize: 48 }}>{targetServings}</Text>
+                  <Text className="text-[13px] text-[#8E8E93] mt-1">Personen</Text>
                 </View>
 
                 <TouchableOpacity
                   onPress={() => adjustServings(1)}
-                  className="w-12 h-12 bg-primary-100 rounded-full items-center justify-center"
+                  className="w-12 h-12 rounded-full items-center justify-center"
+                  style={{ backgroundColor: '#34C759' }}
                   activeOpacity={0.7}
                 >
-                  <Text className="text-2xl text-primary-600 font-light" style={{ lineHeight: 28 }}>+</Text>
+                  <Text className="text-white font-light" style={{ fontSize: 28, lineHeight: 32 }}>+</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Scaled preview */}
             {portionRecipe && portionRecipe.ingredients.length > 0 && (
-              <View className="mb-6">
-                <Text className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Zutaten (skaliert)
-                </Text>
-                <ScrollView style={{ maxHeight: 180 }} showsVerticalScrollIndicator={false}>
-                  {portionRecipe.ingredients.map((ing) => {
-                    const scaled = scaleQty(ing.quantity, portionRecipe.servings, targetServings);
-                    const changed = scaled !== ing.quantity;
-                    return (
-                      <View key={ing.id} className="flex-row items-center py-2.5 border-b border-gray-50">
-                        <Text className="text-base mr-2">{CATEGORY_ICONS[ing.category]}</Text>
-                        <Text className="flex-1 text-sm text-gray-800">{ing.name}</Text>
-                        <View className="items-end">
-                          <Text className={`text-sm font-semibold ${changed ? 'text-primary-600' : 'text-gray-500'}`}>
-                            {fmtQty(scaled)} {ing.unit}
-                          </Text>
-                          {changed && (
-                            <Text className="text-xs text-gray-400">
-                              statt {fmtQty(ing.quantity)} {ing.unit}
+              <>
+                <Text className="text-xs text-[#8E8E93] uppercase tracking-wide mb-1 px-1">Zutaten (skaliert)</Text>
+                <View className="bg-white rounded-xl overflow-hidden mb-4">
+                  <ScrollView style={{ maxHeight: 180 }} showsVerticalScrollIndicator={false}>
+                    {portionRecipe.ingredients.map((ing, idx) => {
+                      const scaled = scaleQty(ing.quantity, portionRecipe.servings, targetServings);
+                      const changed = scaled !== ing.quantity;
+                      return (
+                        <View key={ing.id} className={`flex-row items-center px-4 py-3 ${idx < portionRecipe.ingredients.length - 1 ? 'border-b border-[#E5E5EA]' : ''}`}>
+                          <Text className="text-base mr-2">{CATEGORY_ICONS[ing.category]}</Text>
+                          <Text className="flex-1 text-[15px] text-[#1C1C1E]">{ing.name}</Text>
+                          <View className="items-end">
+                            <Text className={`text-[15px] font-semibold ${changed ? 'text-[#34C759]' : 'text-[#8E8E93]'}`}>
+                              {fmtQty(scaled)} {ing.unit}
                             </Text>
-                          )}
+                            {changed && (
+                              <Text className="text-[12px] text-[#8E8E93]">
+                                statt {fmtQty(ing.quantity)} {ing.unit}
+                              </Text>
+                            )}
+                          </View>
                         </View>
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </View>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              </>
             )}
 
             <View className="flex-row gap-3">
               <TouchableOpacity
                 onPress={closePortionModal}
-                className="flex-1 bg-gray-100 py-3.5 rounded-xl items-center"
+                className="flex-1 bg-white py-3.5 rounded-xl items-center"
               >
-                <Text className="text-gray-700 font-semibold">Abbrechen</Text>
+                <Text className="text-[17px] font-semibold text-[#007AFF]">Abbrechen</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleConfirmPortions}
-                className="flex-1 bg-primary-600 py-3.5 rounded-xl items-center"
+                className="flex-1 py-3.5 rounded-xl items-center"
+                style={{ backgroundColor: '#34C759' }}
               >
-                <Text className="text-white font-semibold">🛒 Zur Einkaufsliste</Text>
+                <Text className="text-[17px] font-semibold text-white">Zur Einkaufsliste</Text>
               </TouchableOpacity>
             </View>
           </View>
