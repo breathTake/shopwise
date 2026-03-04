@@ -168,29 +168,6 @@ shopwise/
 
 ---
 
-## App Store Description (Template)
-
-**Short Title:** Shopwise – Smarter Shopping
-
-**Short Description (80 characters):**
-> Shopping lists, recipes & AI suggestions – all in one app.
-
-**Full Description:**
-> Shopwise makes your shopping smarter. Create and manage multiple shopping lists simultaneously, save your favorite recipes with automatic quantity adjustment for any number of servings — and let AI suggest new recipes based on what's currently in your fridge.
->
-> **What you can do with Shopwise:**
-> - Manage multiple shopping lists in parallel
-> - Shop for items sorted by product category
-> - Save recipes with ingredients and scale servings
-> - Enter items from your fridge and get AI recipe ideas
-> - Create your own product catalog with default units
-> - Save recurring purchases as templates
-
-**Categories:** Food & Drink, Productivity
-
-**Keywords:** Shopping, Shopping List, Recipes, Fridge, AI, Meal Planning, Household
-
----
 
 ## License
 
@@ -201,7 +178,3 @@ MIT — free to use, modify, and distribute.
 <p align="center">
   Made with ☕ and 🤖
 </p>
-
----
-
-Note: This is a README, not a gitignore file. I kept the structure and formatting intact and translated all German text to English, including comments, descriptions, and the app store template.
