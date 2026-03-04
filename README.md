@@ -1,6 +1,3 @@
-# 🛒 Shopwise
-> **Your intelligent shopping companion** — Shopping lists, recipes, and AI-powered cooking suggestions in one app.
-
 ![Version](https://img.shields.io/badge/Version-1.0.0-22c55e?style=flat-square)
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-3b82f6?style=flat-square)
 ![Built with](https://img.shields.io/badge/Built%20with-Expo%20%2B%20React%20Native-000000?style=flat-square)
